@@ -5,32 +5,32 @@ import (
 	"time"
 
 	"github.com/matoous/go-nanoid/v2"
-	"shorturl/models"
+	"shorturl/internal/models"
 )
 
 func TestGenerateShortKey(t *testing.T) {
 	service := NewURLService()
-	
+
 	// Test key generation
 	key1 := service.GenerateShortKey()
 	key2 := service.GenerateShortKey()
-	
+
 	// Keys should be 6 characters long
 	if len(key1) != 6 {
 		t.Errorf("Expected key length 6, got %d", len(key1))
 	}
-	
+
 	// Keys should be different
 	if key1 == key2 {
 		t.Errorf("Generated keys should be different: %s == %s", key1, key2)
 	}
-	
+
 	// Test with specific alphabet for nanoid
 	customKey, err := gonanoid.New(6)
 	if err != nil {
 		t.Errorf("Failed to generate nanoid: %v", err)
 	}
-	
+
 	if len(customKey) != 6 {
 		t.Errorf("Expected nanoid length 6, got %d", len(customKey))
 	}
@@ -38,7 +38,7 @@ func TestGenerateShortKey(t *testing.T) {
 
 func TestValidateURL(t *testing.T) {
 	service := NewURLService()
-	
+
 	tests := []struct {
 		name      string
 		url       string
@@ -68,14 +68,14 @@ func TestValidateURL(t *testing.T) {
 			wantErr:   false,
 		},
 	}
-	
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			url := &models.URL{
 				LongURL:   tt.url,
 				ExpiresAt: tt.expiresAt,
 			}
-			
+
 			err := service.validateURL(url, tt.passkey)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("validateURL() error = %v, wantErr %v", err, tt.wantErr)
@@ -126,7 +126,7 @@ func TestParseDuration(t *testing.T) {
 			wantErr:  true,
 		},
 	}
-	
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			_, err := time.ParseDuration(tt.duration)

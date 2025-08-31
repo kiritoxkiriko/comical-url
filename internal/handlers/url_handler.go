@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"shorturl/services"
+	"shorturl/internal/services"
 )
 
 type URLHandler struct {
@@ -26,9 +26,9 @@ type CreateURLRequest struct {
 }
 
 type CreateURLResponse struct {
-	ShortKey  string    `json:"short_key"`
-	ShortURL  string    `json:"short_url"`
-	LongURL   string    `json:"long_url"`
+	ShortKey  string     `json:"short_key"`
+	ShortURL  string     `json:"short_url"`
+	LongURL   string     `json:"long_url"`
 	ExpiresAt *time.Time `json:"expires_at,omitempty"`
 }
 
@@ -93,7 +93,7 @@ func (h *URLHandler) GetURLInfo(c *gin.Context) {
 
 func (h *URLHandler) RevokeURL(c *gin.Context) {
 	shortKey := c.Param("key")
-	
+
 	err := h.urlService.RevokeURL(shortKey)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})

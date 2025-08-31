@@ -5,8 +5,8 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"shorturl/config"
-	"shorturl/models"
+	"shorturl/internal/config"
+	"shorturl/internal/models"
 )
 
 func TokenAuth() gin.HandlerFunc {

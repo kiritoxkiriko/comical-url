@@ -4,7 +4,15 @@
       "Bash(go mod:*)",
       "Bash(go build:*)",
       "Bash(./shorturl:*)",
-      "Bash(go test:*)"
+      "Bash(go test:*)",
+      "Bash(mkdir:*)",
+      "Bash(mv:*)",
+      "Bash(rmdir:*)",
+      "Bash(find:*)",
+      "Bash(chmod:*)",
+      "Bash(docker-compose:*)",
+      "Bash(docker compose:*)",
+      "Bash(curl:*)"
     ],
     "deny": []
   }

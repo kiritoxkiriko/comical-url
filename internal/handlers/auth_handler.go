@@ -6,8 +6,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 
-	"shorturl/config"
-	"shorturl/models"
+	"shorturl/internal/config"
+	"shorturl/internal/models"
 )
 
 type AuthHandler struct{}

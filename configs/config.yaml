@@ -6,9 +6,9 @@ server:
 
 database:
   type: "mysql"  # mysql, postgres, sqlite
-  host: "localhost"
+  host: "mysql"
   port: 3306
-  user: "root"
+  user: "shorturl"
   password: "password"
   database: "shorturl"
   # Optional: provide complete DSN instead of individual fields
@@ -27,7 +27,7 @@ database:
   # database: "shorturl"
 
 redis:
-  host: "localhost"
+  host: "redis"
   port: 6379
   password: ""
   db: 0

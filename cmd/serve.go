@@ -8,9 +8,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
 
-	"shorturl/config"
-	"shorturl/handlers"
-	"shorturl/middleware"
+	"shorturl/internal/config"
+	"shorturl/internal/handlers"
+	"shorturl/internal/middleware"
 )
 
 var serveCmd = &cobra.Command{

@@ -9,9 +9,9 @@ import (
 	"github.com/matoous/go-nanoid/v2"
 	"golang.org/x/crypto/bcrypt"
 
-	"shorturl/config"
-	"shorturl/models"
-	"shorturl/utils"
+	"shorturl/internal/config"
+	"shorturl/internal/models"
+	"shorturl/internal/utils"
 )
 
 type URLService struct{}

@@ -1,0 +1,291 @@
+openapi: 3.0.3
+info:
+  title: Short URL Service API
+  description: A RESTful API for URL shortening service
+  version: 1.0.0
+  contact:
+    name: Short URL Service
+  license:
+    name: MIT
+
+servers:
+  - url: http://localhost:8080
+    description: Development server
+
+paths:
+  /health:
+    get:
+      summary: Health check
+      tags:
+        - Health
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "ok"
+                  timestamp:
+                    type: string
+                    format: date-time
+                  app:
+                    type: string
+                    example: "Short URL Service"
+
+  /api/shorten:
+    post:
+      summary: Shorten a URL
+      tags:
+        - URL
+      security:
+        - BearerAuth: []
+        - {}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateURLRequest'
+      responses:
+        '201':
+          description: URL shortened successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateURLResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /{key}:
+    get:
+      summary: Redirect to original URL
+      tags:
+        - URL
+      parameters:
+        - name: key
+          in: path
+          required: true
+          description: Short URL key
+          schema:
+            type: string
+        - name: passkey
+          in: query
+          description: Passkey for protected URLs
+          schema:
+            type: string
+      responses:
+        '301':
+          description: Redirect to original URL
+        '404':
+          description: URL not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/info/{key}:
+    get:
+      summary: Get URL information
+      tags:
+        - URL
+      security:
+        - BearerAuth: []
+        - {}
+      parameters:
+        - name: key
+          in: path
+          required: true
+          description: Short URL key
+          schema:
+            type: string
+        - name: passkey
+          in: query
+          description: Passkey for protected URLs
+          schema:
+            type: string
+      responses:
+        '200':
+          description: URL information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  short_key:
+                    type: string
+                  long_url:
+                    type: string
+        '404':
+          description: URL not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/urls/{key}:
+    delete:
+      summary: Revoke a URL
+      tags:
+        - URL
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: key
+          in: path
+          required: true
+          description: Short URL key
+          schema:
+            type: string
+      responses:
+        '200':
+          description: URL revoked successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '404':
+          description: URL not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/auth/tokens:
+    post:
+      summary: Create authentication token
+      tags:
+        - Auth
+      responses:
+        '201':
+          description: Token created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    get:
+      summary: List authentication tokens
+      tags:
+        - Auth
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: List of tokens
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    token:
+                      type: string
+                    created_at:
+                      type: string
+                      format: date-time
+
+  /api/auth/tokens/{token}:
+    delete:
+      summary: Revoke authentication token
+      tags:
+        - Auth
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: token
+          in: path
+          required: true
+          description: Token to revoke
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Token revoked successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    CreateURLRequest:
+      type: object
+      required:
+        - long_url
+      properties:
+        long_url:
+          type: string
+          format: uri
+          description: The original URL to be shortened
+        custom_key:
+          type: string
+          description: Custom short key (optional)
+        passkey:
+          type: string
+          description: Passkey to protect the URL (optional)
+        expires_in:
+          type: string
+          description: Expiration time (e.g., "10s", "1h", "7d", "1y")
+
+    CreateURLResponse:
+      type: object
+      properties:
+        short_key:
+          type: string
+          description: The generated short key
+        short_url:
+          type: string
+          format: uri
+          description: The complete short URL
+        long_url:
+          type: string
+          format: uri
+          description: The original URL
+        expires_at:
+          type: string
+          format: date-time
+          description: Expiration timestamp (if set)
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+
+tags:
+  - name: Health
+    description: Health check endpoints
+  - name: URL
+    description: URL shortening operations
+  - name: Auth
+    description: Authentication operations

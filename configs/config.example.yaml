@@ -1,0 +1,43 @@
+# Short URL Service Configuration Example
+# Copy this file to config.yaml and modify as needed
+
+server:
+  host: "0.0.0.0"
+  port: 8080
+
+database:
+  type: "mysql"  # mysql, postgres, sqlite
+  host: "localhost"
+  port: 3306
+  user: "root"
+  password: "password"
+  database: "shorturl"
+  # Optional: provide complete DSN instead of individual fields
+  # dsn: "root:password@tcp(localhost:3306)/shorturl?charset=utf8mb4&parseTime=True&loc=Local"
+  
+  # For SQLite:
+  # type: "sqlite"
+  # database: "./shorturl.db"
+  
+  # For PostgreSQL:
+  # type: "postgres"
+  # host: "localhost"
+  # port: 5432
+  # user: "postgres"
+  # password: "password"
+  # database: "shorturl"
+
+redis:
+  host: "localhost"
+  port: 6379
+  password: ""
+  db: 0
+
+app:
+  name: "Short URL Service"
+  default_expire: "30d"           # Default expiration time (e.g., 10s, 1h, 7d, 1y)
+  key_length: 6                   # Length of generated short keys
+  cache_duration: "7d"            # Redis cache duration
+  require_auth: false             # Require token authentication for all API calls
+  allow_custom_keys: true         # Allow users to specify custom short keys
+  max_url_length: 2048           # Maximum URL length allowed

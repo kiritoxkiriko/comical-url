@@ -5,8 +5,8 @@ import (
 	"log"
 
 	"github.com/spf13/cobra"
-	"shorturl/config"
-	"shorturl/models"
+	"shorturl/internal/config"
+	"shorturl/internal/models"
 )
 
 var migrateCmd = &cobra.Command{
@@ -24,7 +24,7 @@ func init() {
 
 func runMigrations() error {
 	cfg := GetConfig()
-	
+
 	// Initialize database connections
 	config.InitDatabaseWithConfig(cfg)
 

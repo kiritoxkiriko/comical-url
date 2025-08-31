@@ -11,7 +11,6 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-	config2 "shorturl/internal/config"
 )
 
 var (
@@ -21,8 +20,8 @@ var (
 
 func InitDatabase() {
 	// Default initialization for backward compatibility
-	cfg := &config2.Config{
-		Database: config2.DatabaseConfig{
+	cfg := &Config{
+		Database: DatabaseConfig{
 			Type:     "mysql",
 			Host:     "localhost",
 			Port:     3306,
@@ -30,7 +29,7 @@ func InitDatabase() {
 			Password: "password",
 			Database: "shorturl",
 		},
-		Redis: config2.RedisConfig{
+		Redis: RedisConfig{
 			Host: "localhost",
 			Port: 6379,
 			DB:   0,
@@ -39,11 +38,11 @@ func InitDatabase() {
 	InitDatabaseWithConfig(cfg)
 }
 
-func InitDatabaseWithConfig(cfg *config2.Config) {
+func InitDatabaseWithConfig(cfg *Config) {
 	// Database connection
 	var err error
 	var dialector gorm.Dialector
-	
+
 	switch cfg.Database.Type {
 	case "postgres", "postgresql":
 		dialector = postgres.Open(cfg.Database.DSN)
@@ -52,7 +51,7 @@ func InitDatabaseWithConfig(cfg *config2.Config) {
 	default: // mysql
 		dialector = mysql.Open(cfg.Database.DSN)
 	}
-	
+
 	DB, err = gorm.Open(dialector, &gorm.Config{})
 	if err != nil {
 		log.Fatalf("Failed to connect to %s database: %v", cfg.Database.Type, err)
@@ -69,7 +68,7 @@ func InitDatabaseWithConfig(cfg *config2.Config) {
 	// Test Redis connection
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	
+
 	_, err = Redis.Ping(ctx).Result()
 	if err != nil {
 		log.Fatal("Failed to connect to Redis:", err)
